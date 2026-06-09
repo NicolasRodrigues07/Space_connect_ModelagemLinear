@@ -4,7 +4,7 @@ Este projeto realiza uma análise estatística aprofundada sobre dados reais col
 
 ===================
 
-## 🛰️ O que é um Magnetômetro?
+## O que é um Magnetômetro?
 
 Um magnetômetro é um sensor que mede a intensidade e a direção do campo magnético ao redor dele, utilizando a unidade **nanoTesla (nT)**. No contexto aeroespacial, ele é fundamental para:
 * **Orientação de Satélites:** Determinar para onde o satélite está apontando usando o campo magnético da Terra.
