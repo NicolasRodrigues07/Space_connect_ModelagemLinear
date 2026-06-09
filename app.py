@@ -1,4 +1,3 @@
-# =============================================================================
 # GS2026.1 - Programação Aplicada ao Monitoramento de Missão Espacial
 # Análise Estatística - Sensor AMT00102 (Magnetômetro)
 
@@ -10,7 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 from scipy import stats
 
-# --- 1. CARREGAMENTO DOS DADOS ---
+# 1. CARREGAMENTO DOS DADOS
 print("Carregando dados...")
 stats_6h = pd.read_parquet('AMT00102_stats_6h.parquet')
 stats_6h = stats_6h.dropna()
@@ -24,15 +23,15 @@ v_disc  = stats_6h['value_count'].astype(int)
 print(f"Registros disponíveis: {len(stats_6h)}")
 print(f"Período: {stats_6h.index.min().date()} a {stats_6h.index.max().date()}")
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 # EXERCÍCIO 02 - TABELAS DE DISTRIBUIÇÃO DE FREQUÊNCIAS
-# =============================================================================
+# -----------------------------------------------------------------------------
 
-# --- (a) Variável Quantitativa DISCRETA: value_count ---
-print("\n--- Tabela de Distribuição de Frequências (Discreta) ---")
+# (a) Variável Quantitativa *DISCRETA:* value_count 
+print("\n===Tabela de Distribuição de Frequências (Discreta)===")
 
 freq_disc = v_disc.value_counts().sort_index()
-# Agrupa valores menores que 1000 como "< 1000" para simplificar
+# Agrupa valores menores que 1000 como "< 1000" pra simplificar
 bins_disc = {
     'Menos de 100': v_disc[v_disc < 100].count(),
     '100 a 499':    v_disc[(v_disc >= 100) & (v_disc < 500)].count(),
@@ -41,19 +40,21 @@ bins_disc = {
     '1350':         v_disc[v_disc == 1350].count(),
     'Acima de 1350':v_disc[v_disc > 1350].count(),
 }
+# Cria DataFrame para exibir a tabela
 tdf_disc = pd.DataFrame({
     'Classe': list(bins_disc.keys()),
     'Fi (freq. absoluta)': list(bins_disc.values()),
 })
-tdf_disc['Fr (freq. relativa %)'] = (tdf_disc['Fi (freq. absoluta)'] / len(v_disc) * 100).round(2)
-tdf_disc['Fac (freq. acumulada)'] = tdf_disc['Fi (freq. absoluta)'].cumsum()
-print(tdf_disc.to_string(index=False))
+tdf_disc['Fr (freq. relativa %)'] = (tdf_disc['Fi (freq. absoluta)'] / len(v_disc) * 100).round(2) # Calcula frequência relativa em porcentagem
+tdf_disc['Fac (freq. acumulada)'] = tdf_disc['Fi (freq. absoluta)'].cumsum() 
+print(tdf_disc.to_string(index=False)) #Sem index(IDs) para exibir a tabela limpa
 
-# --- (b) Variável Quantitativa CONTÍNUA: value_mean ---
-print("\n--- Tabela de Distribuição de Frequências (Contínua) ---")
+# (b) Variável Quantitativa *CONTÍNUA:* value_mean
+print("\n===Tabela de Distribuição de Frequências (Contínua)===")
 
 n_classes = 7
 counts, bin_edges = np.histogram(v_cont, bins=n_classes)
+# Cria o texto dos intervalos pegando o início e o fim de cada um dos 7 grupos
 classes = [f"{bin_edges[i]:.1f} a {bin_edges[i+1]:.1f}" for i in range(n_classes)]
 tdf_cont = pd.DataFrame({
     'Classe (nT)': classes,
@@ -63,13 +64,13 @@ tdf_cont = pd.DataFrame({
 })
 print(tdf_cont.to_string(index=False))
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 # EXERCÍCIO 03 - GRÁFICOS
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
-# --- Gráfico 1: Histograma da variável contínua ---
+# Gráfico 1: Histograma da variável contínua 
 ax1 = axes[0]
 ax1.hist(v_cont, bins=40, color='steelblue', edgecolor='white', alpha=0.85)
 ax1.set_title('Distribuição da Média do Campo Magnético (6h)', fontsize=13, fontweight='bold')
@@ -80,7 +81,7 @@ ax1.axvline(v_cont.median(), color='orange', linestyle='--', linewidth=1.5, labe
 ax1.legend(fontsize=10)
 ax1.grid(axis='y', alpha=0.3)
 
-# --- Gráfico 2: Evolução temporal da média mensal ---
+# Gráfico 2: Evolução temporal da média mensal 
 ax2 = axes[1]
 mensal = v_cont.resample('ME').mean()
 ax2.plot(mensal.index, mensal.values, color='darkorange', linewidth=1.8, marker='o', markersize=3)
@@ -97,9 +98,9 @@ plt.savefig('graficos_AMT00102.png', dpi=150, bbox_inches='tight')
 plt.close()
 print("\nGráficos salvos em graficos_AMT00102.png")
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 # EXERCÍCIO 04 - ESTATÍSTICA DESCRITIVA
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 def estatisticas_completas(serie, nome):
     print(f"\n{'='*55}")
